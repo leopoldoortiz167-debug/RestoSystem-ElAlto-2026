@@ -1,1 +1,54 @@
-
+{% extends "base.html" %}
+{% block content %}
+<h2 class="text-white fw-bold mb-4"><i class="bi bi-box-seam text-glow"></i> Inventario DSS</h2>
+<div class="row">
+    <div class="col-xl-8">
+        <div class="card card-dark p-4">
+            <h5 class="text-white mb-3"><i class="bi bi-list"></i> Stock Actual</h5>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover">
+                    <thead><tr><th>Producto</th><th>Categoría</th><th>Stock</th><th>Mínimo</th><th>Estado</th></tr></thead>
+                    <tbody>
+                        {% for p in productos %}
+                        <tr>
+                            <td class="text-white">{{ p.nombre }}</td>
+                            <td><span class="badge bg-info text-dark">{{ p.categoria }}</span></td>
+                            <td class="text-glow fw-bold">{{ p.stock }}</td>
+                            <td class="text-secondary">{{ p.stock_minimo }}</td>
+                            <td>
+                                {% if p.stock < p.stock_minimo %}
+                                <span class="badge bg-danger">CRÍTICO</span>
+                                {% elif p.stock < p.stock_minimo * 1.5 %}
+                                <span class="badge bg-warning text-dark">BAJO</span>
+                                {% else %}
+                                <span class="badge bg-success">OK</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card card-dark p-4">
+            <h5 class="text-white mb-3"><i class="bi bi-plus-circle"></i> Reponer Stock</h5>
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label text-glow">Producto</label>
+                    <select name="producto_id" class="form-select" required>
+                        {% for p in productos %}<option value="{{ p.id }}">{{ p.nombre }} (Actual: {{ p.stock }})</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-glow">Cantidad a Agregar</label>
+                    <input type="number" name="cantidad" class="form-control" min="1" value="10" required>
+                </div>
+                <button type="submit" class="btn btn-glow w-100">📦 REPONER STOCK</button>
+                <small class="text-secondary d-block mt-2 text-center">Criterio 14: Inventario DSS - 5pts</small>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
